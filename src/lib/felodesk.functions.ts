@@ -20,23 +20,16 @@ export const generateEmail = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => emailInput.parse(data))
   .handler(async ({ data }) => {
     const { generateText } = await import("./ai/gateway.server.ts");
-    const text = await generateText([
-      {
-        role: "system",
-        content:
-          "You write workplace emails. Return only the email: a 'Subject:' line, then the body, then a sign-off. No commentary, no markdown fences. Keep it clear, concise and well structured.",
-      },
-      {
-        role: "user",
-        content: [
-          data.recipient ? `Recipient: ${data.recipient}` : null,
-          `Tone: ${data.tone}`,
-          `What I want to communicate: ${data.brief}`,
-        ]
-          .filter(Boolean)
-          .join("\n"),
-      },
-    ]);
+    const text = await generateText(
+      "You write workplace emails. Return only the email: a 'Subject:' line, then the body, then a sign-off. No commentary, no markdown fences. Keep it clear, concise and well structured.",
+      [
+        data.recipient ? `Recipient: ${data.recipient}` : null,
+        `Tone: ${data.tone}`,
+        `What I want to communicate: ${data.brief}`,
+      ]
+        .filter(Boolean)
+        .join("\n"),
+    );
     return { email: text };
   });
 
