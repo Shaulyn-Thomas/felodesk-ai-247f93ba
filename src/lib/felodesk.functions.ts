@@ -17,7 +17,7 @@ const plannerInput = z.object({
 });
 
 export const generateEmail = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => emailInput.parse(data))
+  .validator((data: unknown) => emailInput.parse(data))
   .handler(async ({ data }) => {
     const { generateText } = await import("./ai/gateway.server.ts");
     const text = await generateText(
@@ -34,7 +34,7 @@ export const generateEmail = createServerFn({ method: "POST" })
   });
 
 export const summarizeNotes = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => notesInput.parse(data))
+  .validator((data: unknown) => notesInput.parse(data))
   .handler(async ({ data }) => {
     const { generateText, parseJsonReply } = await import("./ai/gateway.server.ts");
     const text = await generateText(
@@ -61,7 +61,7 @@ export const summarizeNotes = createServerFn({ method: "POST" })
   });
 
 export const planTasks = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => plannerInput.parse(data))
+  .validator((data: unknown) => plannerInput.parse(data))
   .handler(async ({ data }) => {
     const { generateText, parseJsonReply } = await import("./ai/gateway.server.ts");
     const text = await generateText(
