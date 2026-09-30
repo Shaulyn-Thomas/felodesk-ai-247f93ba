@@ -37,14 +37,10 @@ export const summarizeNotes = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => notesInput.parse(data))
   .handler(async ({ data }) => {
     const { generateText, parseJsonReply } = await import("./ai/gateway.server.ts");
-    const text = await generateText([
-      {
-        role: "system",
-        content:
-          'Summarize meeting notes. Reply with JSON only, shaped {"summary": string, "actionItems": string[], "decisions": string[], "deadlines": string[]}. Keep the summary to a short plain-language paragraph. Each action item names an owner when the notes mention one. Each deadline includes the date or timing given. Use empty arrays when nothing applies. Do not invent facts.',
-      },
-      { role: "user", content: data.notes },
-    ]);
+    const text = await generateText(
+      'Summarize meeting notes. Reply with JSON only, shaped {"summary": string, "actionItems": string[], "decisions": string[], "deadlines": string[]}. Keep the summary to a short plain-language paragraph. Each action item names an owner when the notes mention one. Each deadline includes the date or timing given. Use empty arrays when nothing applies. Do not invent facts.',
+      data.notes,
+    );
 
     const parsed = parseJsonReply<{
       summary?: string;
@@ -68,14 +64,10 @@ export const planTasks = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => plannerInput.parse(data))
   .handler(async ({ data }) => {
     const { generateText, parseJsonReply } = await import("./ai/gateway.server.ts");
-    const text = await generateText([
-      {
-        role: "system",
-        content:
-          'Organize a work task list. Reply with JSON only, shaped {"priorities": [{"task": string, "priority": "P1"|"P2"|"P3", "why": string}], "schedule": [{"slot": string, "items": string[]}]}. Rank by urgency and impact. For a Daily horizon use time blocks as slots (e.g. "09:00 - 10:30"); for a Weekly horizon use weekdays as slots. Keep "why" to one short sentence.',
-      },
-      { role: "user", content: `Horizon: ${data.horizon}\nTasks:\n${data.tasks}` },
-    ]);
+    const text = await generateText(
+      'Organize a work task list. Reply with JSON only, shaped {"priorities": [{"task": string, "priority": "P1"|"P2"|"P3", "why": string}], "schedule": [{"slot": string, "items": string[]}]}. Rank by urgency and impact. For a Daily horizon use time blocks as slots (e.g. "09:00 - 10:30"); for a Weekly horizon use weekdays as slots. Keep "why" to one short sentence.',
+      `Horizon: ${data.horizon}\nTasks:\n${data.tasks}`,
+    );
 
     const parsed = parseJsonReply<{
       priorities?: { task?: string; priority?: string; why?: string }[];
