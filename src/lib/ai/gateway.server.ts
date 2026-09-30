@@ -41,7 +41,16 @@ export async function generateText(messages: ModelMessage[]): Promise<string> {
     },
   });
 
-  const text = await result.text;
+  let text = "";
+  for await (const part of result.fullStream) {
+    if (part.type === "text-delta") text += part.text;
+    if (part.type === "error") {
+      console.error("[felodesk] AI stream error", part.error);
+      const message = part.error instanceof Error ? part.error.message : String(part.error);
+      throw new Error(`The assistant could not complete this request: ${message}`);
+    }
+  }
+
   if (!text.trim()) {
     throw new Error("The assistant returned an empty response. Please try again.");
   }
