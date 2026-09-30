@@ -1,5 +1,5 @@
 import { createOpenAI } from "@ai-sdk/openai";
-import { streamText, type ModelMessage } from "ai";
+import { streamText } from "ai";
 
 import { createLovableAiGatewayRunIdFetch } from "./run-id.ts";
 
@@ -10,7 +10,7 @@ const MODEL = "openai/gpt-6-astra";
  * Runs one streamed Responses call through the Lovable AI Gateway and
  * returns the final text. Server-only: reads LOVABLE_API_KEY at call time.
  */
-export async function generateText(messages: ModelMessage[]): Promise<string> {
+export async function generateText(instructions: string, prompt: string): Promise<string> {
   const apiKey = process.env["LOVABLE_API_KEY"];
   if (!apiKey) {
     throw new Error("AI is not configured for this project yet.");
@@ -29,9 +29,10 @@ export async function generateText(messages: ModelMessage[]): Promise<string> {
 
   const result = streamText({
     model: provider.responses(MODEL),
-    messages,
+    prompt,
     providerOptions: {
       openai: {
+        instructions,
         store: false,
         forceReasoning: true,
         reasoningEffort: "low",
