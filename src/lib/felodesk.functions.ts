@@ -50,7 +50,7 @@ export const summarizeNotes = createServerFn({ method: "POST" })
         "- Keep dates and timeframes exactly as worded in the notes (e.g. 'by Wednesday', 'within 24 hours', 'next Monday'). Do not convert, calculate or reword them.",
         "- deadlines contains ONLY actual dates or specific task deadlines stated in the notes, each written once in the form 'Subject: timing as stated'. Never repeat the same deadline more than once, even if it also appears in an action item.",
         "- Never put general instructions, quality reminders or service standards in deadlines. Never invent or imply a deadline that was not stated in the notes.",
-        "- Meeting dates are not task deadlines and do not go in deadlines. List future meetings separately as their own follow-up line prefixed 'Next meeting:', e.g. 'Next meeting: Monday to check progress.'",
+        "- Meeting dates are not task deadlines and do not go in deadlines. List future meetings as their own follow-up item in actionItems, prefixed 'Next meeting:', e.g. 'Next meeting: Monday to check progress.'",
         "- decisions only contains things the group actually agreed or decided; do not repeat tasks there.",
       ].join("\n"),
       data.notes,
