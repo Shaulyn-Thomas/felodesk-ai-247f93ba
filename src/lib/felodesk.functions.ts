@@ -38,7 +38,19 @@ export const summarizeNotes = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { generateText, parseJsonReply } = await import("./ai/gateway.server.ts");
     const text = await generateText(
-      'Summarize meeting notes. Reply with JSON only, shaped {"summary": string, "actionItems": string[], "decisions": string[], "deadlines": string[]}. Keep the summary to a short plain-language paragraph. Each action item names an owner when the notes mention one. Each deadline includes the date or timing given. Use empty arrays when nothing applies. Do not invent facts.',
+      [
+        'Summarize meeting notes. Reply with JSON only, shaped {"summary": string, "actionItems": string[], "decisions": string[], "deadlines": string[]}.',
+        "Keep the summary to a short plain-language paragraph. Use empty arrays when nothing applies. Do not invent facts.",
+        "Strict separation rules:",
+        "- Treat every statement in the notes as its own item. Never merge information from different sentences or statements into one item.",
+        "- Each action item is written as 'Owner: task + its own deadline', e.g. 'Lerato: Confirm customer requirements by Wednesday.' Only include a deadline if it was stated in the same statement as that task. If no owner is stated, use a short subject label instead of guessing a person.",
+        "- Never attach a deadline, timeframe or requirement from one statement to a different person's task.",
+        "- General rules or service standards (e.g. 'Customer emails should be answered within 24 hours') are their own item labelled by subject, e.g. 'Customer emails: Respond within 24 hours.' Never attach them to someone's task.",
+        "- Keep dates and timeframes exactly as worded in the notes (e.g. 'by Wednesday', 'within 24 hours', 'next Monday'). Do not convert, calculate or reword them.",
+        "- Meeting dates are not task deadlines. List future meetings separately, prefixed 'Next meeting:', e.g. 'Next meeting: Monday to check progress.' Put them in deadlines as their own line, never combined with a task.",
+        "- deadlines lists each dated item once, in the form 'Subject: timing as stated', one per statement.",
+        "- decisions only contains things the group actually agreed or decided; do not repeat tasks there.",
+      ].join("\n"),
       data.notes,
     );
 
