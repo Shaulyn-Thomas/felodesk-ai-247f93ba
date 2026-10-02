@@ -88,7 +88,7 @@ export function TextArea({
       rows={rows}
       placeholder={placeholder}
       onChange={(event) => onChange(event.target.value)}
-      className="w-full resize-y rounded-xl border border-border bg-ink/40 p-3 text-sm leading-relaxed text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/50"
+      className="w-full resize-y rounded-xl border border-border bg-field p-3 text-sm leading-relaxed text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/50"
     />
   );
 }
@@ -107,7 +107,7 @@ export function TextInput({
       value={value}
       placeholder={placeholder}
       onChange={(event) => onChange(event.target.value)}
-      className="w-full rounded-xl border border-border bg-ink/40 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/50"
+      className="w-full rounded-xl border border-border bg-field px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/50"
     />
   );
 }
