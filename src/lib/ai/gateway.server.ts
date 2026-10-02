@@ -10,7 +10,21 @@ const MODEL = "openai/gpt-6-astra";
  * Runs one streamed Responses call through the Lovable AI Gateway and
  * returns the final text. Server-only: reads LOVABLE_API_KEY at call time.
  */
+export type ChatTurn = { role: "user" | "assistant"; content: string };
+
 export async function generateText(instructions: string, prompt: string): Promise<string> {
+  return run(instructions, { prompt });
+}
+
+/** Multi-turn variant: sends the full conversation history every call. */
+export async function generateChat(instructions: string, messages: ChatTurn[]): Promise<string> {
+  return run(instructions, { messages });
+}
+
+async function run(
+  instructions: string,
+  input: { prompt: string } | { messages: ChatTurn[] },
+): Promise<string> {
   const apiKey = process.env["LOVABLE_API_KEY"];
   if (!apiKey) {
     throw new Error("AI is not configured for this project yet.");
@@ -29,7 +43,7 @@ export async function generateText(instructions: string, prompt: string): Promis
 
   const result = streamText({
     model: provider.responses(MODEL),
-    prompt,
+    ...input,
     providerOptions: {
       openai: {
         instructions,

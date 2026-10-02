@@ -27,6 +27,7 @@
   --color-brand: var(--brand);
   --color-accent2: var(--accent2);
   --color-ok: var(--ok);
+  --color-field: var(--field);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -80,12 +81,46 @@
   --border: oklch(1 0 0 / 12%);
   --input: oklch(1 0 0 / 14%);
   --ring: var(--brand);
+  --field: oklch(0.153 0.031 265 / 40%);
+  --glass-bg: oklch(1 0 0 / 8%);
+  --glass-border: oklch(1 0 0 / 12%);
+  --sheen-color: oklch(1 0 0 / 0.14);
 
   --gradient-brand: linear-gradient(120deg, var(--brand), var(--accent2));
   --ambient-light:
     radial-gradient(900px 500px at 15% -10%, oklch(0.815 0.125 208 / 0.28), transparent 60%),
     radial-gradient(800px 600px at 100% 10%, oklch(0.627 0.246 303 / 0.3), transparent 55%),
     radial-gradient(700px 700px at 60% 120%, oklch(0.62 0.19 264 / 0.22), transparent 60%);
+}
+
+/* Light mode: same Kinetic Glass brand, daylight canvas. Toggled via html.light */
+html.light {
+  --ink2: oklch(0.965 0.012 255);
+  --brand: oklch(0.56 0.13 222);
+  --accent2: oklch(0.52 0.22 303);
+  --ok: oklch(0.6 0.15 158);
+  --background: oklch(0.985 0.006 255);
+  --foreground: oklch(0.2 0.04 265);
+  --card: oklch(1 0 0 / 75%);
+  --card-foreground: oklch(0.2 0.04 265);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.2 0.04 265);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.2 0.04 265 / 5%);
+  --secondary-foreground: oklch(0.2 0.04 265);
+  --muted: oklch(0.2 0.04 265 / 5%);
+  --muted-foreground: oklch(0.2 0.04 265 / 62%);
+  --accent: oklch(0.2 0.04 265 / 7%);
+  --accent-foreground: oklch(0.2 0.04 265);
+  --border: oklch(0.2 0.04 265 / 12%);
+  --input: oklch(0.2 0.04 265 / 15%);
+  --field: oklch(1 0 0 / 85%);
+  --glass-bg: oklch(1 0 0 / 70%);
+  --glass-border: oklch(0.2 0.04 265 / 10%);
+  --sheen-color: oklch(1 0 0 / 0.5);
+  --ambient-light:
+    radial-gradient(900px 500px at 15% -10%, oklch(0.815 0.125 208 / 0.18), transparent 60%),
+    radial-gradient(800px 600px at 100% 10%, oklch(0.627 0.246 303 / 0.12), transparent 55%);
 }
 
 @layer base {
@@ -137,8 +172,8 @@
 }
 
 @utility glass {
-  background-color: oklch(1 0 0 / 8%);
-  border: 1px solid oklch(1 0 0 / 12%);
+  background-color: var(--glass-bg);
+  border: 1px solid var(--glass-border);
   backdrop-filter: blur(24px);
 }
 
@@ -151,7 +186,7 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: linear-gradient(115deg, transparent 30%, oklch(1 0 0 / 0.14) 50%, transparent 70%);
+    background: linear-gradient(115deg, transparent 30%, var(--sheen-color) 50%, transparent 70%);
     animation: sheen 5s ease-in-out infinite;
   }
 }
