@@ -10,6 +10,8 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedEmailRouteImport } from './routes/_authenticated/email'
 import { Route as AuthenticatedNotesRouteImport } from './routes/_authenticated/notes'
 import { Route as AuthenticatedPlannerRouteImport } from './routes/_authenticated/planner'
@@ -19,30 +21,41 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedEmailRoute = AuthenticatedEmailRouteImport.update({
-  id: '/_authenticated/email',
-  path: '/email',
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedEmailRoute = AuthenticatedEmailRouteImport.update({
+  id: '/email',
+  path: '/email',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedNotesRoute = AuthenticatedNotesRouteImport.update({
-  id: '/_authenticated/notes',
+  id: '/notes',
   path: '/notes',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedPlannerRoute = AuthenticatedPlannerRouteImport.update({
-  id: '/_authenticated/planner',
+  id: '/planner',
   path: '/planner',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/email': typeof AuthenticatedEmailRoute
   '/notes': typeof AuthenticatedNotesRoute
   '/planner': typeof AuthenticatedPlannerRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/email': typeof AuthenticatedEmailRoute
   '/notes': typeof AuthenticatedNotesRoute
   '/planner': typeof AuthenticatedPlannerRoute
@@ -50,18 +63,22 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
   '/_authenticated/email': typeof AuthenticatedEmailRoute
   '/_authenticated/notes': typeof AuthenticatedNotesRoute
   '/_authenticated/planner': typeof AuthenticatedPlannerRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/email' | '/notes' | '/planner'
+  fullPaths: '/' | '/auth' | '/email' | '/notes' | '/planner'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/email' | '/notes' | '/planner'
+  to: '/' | '/auth' | '/email' | '/notes' | '/planner'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
+    | '/auth'
     | '/_authenticated/email'
     | '/_authenticated/notes'
     | '/_authenticated/planner'
@@ -69,9 +86,8 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AuthenticatedEmailRoute: typeof AuthenticatedEmailRoute
-  AuthenticatedNotesRoute: typeof AuthenticatedNotesRoute
-  AuthenticatedPlannerRoute: typeof AuthenticatedPlannerRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -83,35 +99,63 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/email': {
       id: '/_authenticated/email'
       path: '/email'
       fullPath: '/email'
       preLoaderRoute: typeof AuthenticatedEmailRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/notes': {
       id: '/_authenticated/notes'
       path: '/notes'
       fullPath: '/notes'
       preLoaderRoute: typeof AuthenticatedNotesRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/planner': {
       id: '/_authenticated/planner'
       path: '/planner'
       fullPath: '/planner'
       preLoaderRoute: typeof AuthenticatedPlannerRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
   }
 }
 
-const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedEmailRoute: typeof AuthenticatedEmailRoute
+  AuthenticatedNotesRoute: typeof AuthenticatedNotesRoute
+  AuthenticatedPlannerRoute: typeof AuthenticatedPlannerRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedEmailRoute: AuthenticatedEmailRoute,
   AuthenticatedNotesRoute: AuthenticatedNotesRoute,
   AuthenticatedPlannerRoute: AuthenticatedPlannerRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
+const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
