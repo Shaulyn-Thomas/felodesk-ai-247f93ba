@@ -1,5 +1,40 @@
-import { Link } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useState, type ReactNode } from "react";
+
+import { supabase } from "@/integrations/supabase/client";
+import { useSession } from "@/lib/session";
+
+function AccountButton() {
+  const { session, ready } = useSession();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  if (!ready) return null;
+  if (!session) {
+    return (
+      <Link to="/auth" className="gradient-brand rounded-full px-4 py-2 font-display text-sm font-semibold text-primary-foreground">
+        Sign in
+      </Link>
+    );
+  }
+  async function signOut() {
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    await supabase.auth.signOut();
+    navigate({ to: "/auth", replace: true });
+  }
+  const initial = (session.user.email ?? "?").charAt(0).toUpperCase();
+  return (
+    <div className="flex items-center gap-2">
+      <div title={session.user.email} className="gradient-brand grid size-10 place-items-center rounded-full font-display font-bold text-primary-foreground">
+        {initial}
+      </div>
+      <button onClick={signOut} className="rounded-full border border-border bg-secondary px-3 py-2 text-xs text-muted-foreground hover:text-foreground">
+        Sign out
+      </button>
+    </div>
+  );
+}
 
 const NAV = [
   { to: "/", label: "Dashboard" },
@@ -122,9 +157,7 @@ export function AppShell({
               <div className="hidden items-center gap-2 rounded-full border border-border bg-secondary px-4 py-2 text-sm text-muted-foreground md:flex">
                 <span className="size-2 rounded-full bg-ok" /> AI engine online
               </div>
-              <div className="gradient-brand grid size-10 place-items-center rounded-full font-display font-bold text-primary-foreground">
-                P
-              </div>
+              <AccountButton />
             </div>
           </header>
 
