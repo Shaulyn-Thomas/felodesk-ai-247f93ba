@@ -16,7 +16,7 @@ import {
 } from "@/components/ui-kit";
 import { planTasks } from "@/lib/felodesk.functions";
 
-export const Route = createFileRoute("/planner")({
+export const Route = createFileRoute("/_authenticated/planner")({
   head: () => ({
     meta: [
       { title: "AI Task Planner — FeloDesk AI" },

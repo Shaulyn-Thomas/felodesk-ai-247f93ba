@@ -15,7 +15,7 @@ import {
 } from "@/components/ui-kit";
 import { summarizeNotes } from "@/lib/felodesk.functions";
 
-export const Route = createFileRoute("/notes")({
+export const Route = createFileRoute("/_authenticated/notes")({
   head: () => ({
     meta: [
       { title: "Meeting Notes Summarizer — FeloDesk AI" },
