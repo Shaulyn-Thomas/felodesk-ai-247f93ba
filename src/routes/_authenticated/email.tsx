@@ -17,7 +17,7 @@ import {
 } from "@/components/ui-kit";
 import { generateEmail } from "@/lib/felodesk.functions";
 
-export const Route = createFileRoute("/email")({
+export const Route = createFileRoute("/_authenticated/email")({
   head: () => ({
     meta: [
       { title: "AI Email Generator — FeloDesk AI" },
